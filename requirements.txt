@@ -1,0 +1,9 @@
+flask
+nltk
+scikit-learn
+python-dotenv
+sentence-transformers
+faiss-cpu
+numpy
+openai
+hf_xet
