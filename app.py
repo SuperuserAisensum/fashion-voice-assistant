@@ -22,9 +22,10 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "fashion-chatbot-secret-key"
 # We'll use this instead of server-side sessions for simplicity
 conversations = {}
 
-# Initialize OpenAI client
+# Initialize OpenAI client with SambaNova API endpoint
 openai_client = openai.OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY")
+    api_key="9b54b7a6-5505-409e-a8d8-8187ac8cad04",
+    base_url="https://api.sambanova.ai/v1"
 )
 
 # Load fashion data
@@ -908,21 +909,21 @@ IMPORTANT: DO NOT recommend products yet! You need at least 4 key preferences fr
         # Call OpenAI LLM
         try:
             response = openai_client.chat.completions.create(
-                model="gpt-4o",
+                model="Llama-4-Maverick-17B-128E-Instruct",
                 messages=[
                     {"role": "system", "content": "You are April, a helpful, warm and enthusiastic fashion stylist who works for 'This is April' fashion brand. You chat in a conversational Bahasa Indonesia style like a friend would. Your personality is friendly, enthusiastic and you make people feel comfortable with your natural conversation style. Use casual, warm language with natural expressions like 'nih', 'dong', 'sih', 'banget', etc. where appropriate to sound authentic. Avoid sounding like you're reading from a script or catalog. IMPORTANT: DO NOT use any emoji, special characters, or Unicode symbols in your responses as they will not be properly processed by the text-to-speech system."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.8,  # Slightly higher temperature for more natural responses
-                top_p=0.95
+                temperature=0.1,  # Lower temperature for more consistent responses
+                top_p=0.1
             )
             
             # Return generated response
             generated_text = response.choices[0].message.content.strip()
             return generated_text
         except openai.OpenAIError as oe:
-            print(f"Error generating response with OpenAI: {oe}")
-            # Fallback response for OpenAI errors
+            print(f"Error generating response with SambaNova API: {oe}")
+            # Fallback response for SambaNova API errors
             return "Maaf, ada kendala dengan sistem chat kami. Coba refresh halaman atau periksa koneksi internet kamu."
     
     except Exception as e:
@@ -1313,6 +1314,6 @@ if __name__ == '__main__':
         os.makedirs('templates')
     
     print("Fashion Chatbot is ready. Starting Flask server...")
-    # By default, use rule-based responses unless USE_OPENAI_LLM is true
-    print(f"Using OpenAI LLM: {os.environ.get('USE_OPENAI_LLM', 'true')}")
+    # By default, use rule-based responses unless USE_SAMBANOVA_LLM is true
+    print(f"Using SambaNova LLM: {os.environ.get('USE_SAMBANOVA_LLM', 'true')}")
     app.run(debug=True) 
